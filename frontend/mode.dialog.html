@@ -1,0 +1,26 @@
+<md-dialog flex="50">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Change {{ $ctrl.selectedArea.name }} mode</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="$ctrl.closeDialog(true)">
+                <cl-icon cl-icon="close"></cl-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+
+    <md-dialog-content class="md-dialog-content">
+        <config-select
+            cl-title="Select mode to apply to {{ $ctrl.selectedArea.name }} area"
+            cl-model="$ctrl.selectedMode" cl-options="$ctrl.MODES"
+        ></config-select>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+        <span flex></span>
+        <md-button ng-click="$ctrl.closeDialog()" class="md-raised md-primary">
+            <cl-icon cl-icon="check"></cl-icon>
+            Set mode
+        </md-button>
+    </md-dialog-actions>
+</md-dialog>

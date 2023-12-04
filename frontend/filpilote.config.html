@@ -1,0 +1,24 @@
+<div layout="column" layout-padding ng-cloak>
+    <config-section
+        cl-title="Add new area" cl-icon="cog"
+    ></config-section>
+    <config-text
+        cl-title="Area name" cl-subtitle="Identify controlled area"
+        cl-model="$ctrl.areaName" cl-required="true"
+    ></config-text>
+    <config-gpios-pins
+        cl-title="Select gpios used to control area circuit"
+        selected-gpios="$ctrl.selectedGpios"
+    ></config-gpios-pins>
+    <config-button
+        cl-icon="" cl-click="$ctrl.addArea()"
+        cl-btn-label="Add area" cl-btn-icon="plus" cl-btn-style="md-raised md-primary"
+    ></config-button>
+
+    <config-section
+        cl-title="Configured areas" cl-icon="texture-box"
+    ></config-section>
+    <config-list
+        cl-items="$ctrl.areas" cl-empty=""No areas configured"
+    ></config-list>
+</div>

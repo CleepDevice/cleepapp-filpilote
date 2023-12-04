@@ -1,0 +1,14 @@
+{
+    "icon": "radiator",
+    "global": {
+        "js": ["filpilote.service.js"],
+        "html": [],
+        "css": []
+    },
+    "config": {
+        "js": ["filpilote.config.js"],
+        "html": ["filpilote.config.html", "mode.dialog.html"],
+        "css": []
+    }
+}
+    
