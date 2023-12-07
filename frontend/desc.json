@@ -9,6 +9,103 @@
         "js": ["filpilote.config.js"],
         "html": ["filpilote.config.html", "mode.dialog.html"],
         "css": []
+    },
+    "widgets": {
+        "filpilotearea": {
+            "header": {
+                "icon": "radiator"
+            },
+            "content": [
+                {
+                    "icon": "sofa-outline",
+                    "style": "icon-xl",
+                    "condition": {
+                        "attr": "mode",
+                        "operator": "===",
+                        "value": "COMFORT"
+                    }
+                },
+                {
+                    "icon": "car-defrost-rear",
+                    "style": "icon-xl",
+                    "condition": {
+                        "attr": "mode",
+                        "operator": "===",
+                        "value": "ANTIFROST"
+                    }
+                },
+                {
+                    "icon": "sprout-outline",
+                    "condition": {
+                        "attr": "mode",
+                        "operator": "===",
+                        "value": "ECO"
+                    }
+                },
+                {
+                    "icon": "stop",
+                    "condition": {
+                        "attr": "mode",
+                        "operator": "===",
+                        "value": "STOP"
+                    }
+                }
+            ],
+            "footer": [
+                {
+                    "type": "button",
+                    "icon": "sofa-outline",
+                    "tooltip": "Comfort",
+                    "action": {
+                        "command": "set_mode",
+                        "to": "filpilote",
+                        "uuid": "area_uuid",
+                        "params": {
+                            "mode": "COMFORT"
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "icon": "car-defrost-rear",
+                    "tooltip": "Anti-frost",
+                    "action": {
+                        "command": "set_mode",
+                        "to": "filpilote",
+                        "uuid": "area_uuid",
+                        "params": {
+                            "mode": "ANTIFROST"
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "icon": "sprout-outline",
+                    "tooltip": "Eco",
+                    "action": {
+                        "command": "set_mode",
+                        "to": "filpilote",
+                        "uuid": "area_uuid",
+                        "params": {
+                            "mode": "ECO"
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "icon": "stop",
+                    "tooltip": "Stop",
+                    "action": {
+                        "command": "set_mode",
+                        "to": "filpilote",
+                        "uuid": "area_uuid",
+                        "params": {
+                            "mode": "STOP"
+                        }
+                    }
+                }
+            ]
+        }
     }
 }
     
