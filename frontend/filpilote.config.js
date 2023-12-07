@@ -8,7 +8,7 @@ angular
 .directive('filpiloteConfigComponent', ['$rootScope', 'cleepService', 'toastService', 'filpiloteService', '$mdDialog',
 function($rootScope, cleepService, toastService, filpiloteService, $mdDialog) {
 
-    var filpiloteConfigController = function() {
+    var filpiloteConfigController = function($scope) {
         var self = this;
         self.areas = [];
         self.areaName = undefined;
@@ -16,9 +16,10 @@ function($rootScope, cleepService, toastService, filpiloteService, $mdDialog) {
             { gpio: undefined, label: 'gpio1' },
             { gpio: undefined, label: 'gpio2' },
         ];
+        self.refreshGpios = false;
         self.selectedArea = undefined;
         self.MODES = [
-            { label: 'Frost-free', value: 'FROSTFREE'},
+            { label: 'Anti-frost', value: 'ANTIFROST'},
             { label: 'Comfort', value: 'COMFORT'},
             { label: 'Eco', value: 'ECO'},
             { label: 'Stop', value: 'STOP'},
@@ -26,7 +27,6 @@ function($rootScope, cleepService, toastService, filpiloteService, $mdDialog) {
         self.selectedMode = self.MODES[0].value;
 
         self.$onInit = function() {
-            self.resetForm();
             cleepService.getModuleDevices('filpilote');
         };
 
@@ -40,6 +40,9 @@ function($rootScope, cleepService, toastService, filpiloteService, $mdDialog) {
 
         self.resetForm = function () {
             self.areaName = undefined;
+            self.selectedGpios[0].gpio = undefined;
+            self.selectedGpios[1].gpio = undefined;
+            $scope.$broadcast('refresh-gpios');
         };
 
         self.setAreas = function (devices) {
@@ -89,17 +92,18 @@ function($rootScope, cleepService, toastService, filpiloteService, $mdDialog) {
         };
 
         self.deleteArea = function (area) {
-            filpiloteService.deleteArea(area.name)
+            filpiloteService.deleteArea(area.uuid)
                 .then((response) => {
                     if (!response.error) {
                         cleepService.reloadDevices();
+                        $scope.$broadcast('refresh-gpios');
                         toastService.success('Area deleted');
                     }
                 });
         };
 
         self.setMode = function(area, mode) {
-            filpiloteService.setMode(area.name, mode)
+            filpiloteService.setMode(area.uuid, mode)
                 .then((response) => {
                     if (!response.error) {
                         cleepService.reloadDevices();
@@ -111,7 +115,7 @@ function($rootScope, cleepService, toastService, filpiloteService, $mdDialog) {
         self.openModeDialog = function (area) {
             self.selectedArea = area;
             self.selectedMode = area.mode;
-            
+
             return $mdDialog.show({
                 controller: function() { return self },
                 controllerAs: '$ctrl',

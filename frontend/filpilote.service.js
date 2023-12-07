@@ -18,16 +18,16 @@ angular
         return rpcService.sendCommand('add_area', 'filpilote', data);
     };
 
-    self.deleteArea = function (areaName) {
+    self.deleteArea = function (uuid) {
         const data = {
-            area_name: areaName,
+            area_uuid: uuid,
         }
         return rpcService.sendCommand('delete_area', 'filpilote', data);
     };
 
-    self.setMode = function (areaName, mode) {
+    self.setMode = function (uuid, mode) {
         const data = {
-            area_name: areaName,
+            area_uuid: uuid,
             mode,
         }
         return rpcService.sendCommand('set_mode', 'filpilote', data);

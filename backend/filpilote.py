@@ -26,14 +26,14 @@ class Filpilote(CleepModule):
     MODULE_CONFIG_FILE = 'filpilote.conf'
     DEFAULT_CONFIG = {}
 
-    MODE_FROSTFREE = "FROSTFREE"
+    MODE_ANTIFROST = "ANTIFROST"
     MODE_COMFORT = "COMFORT"
     MODE_ECO = "ECO"
     MODE_STOP = "STOP"
-    MODES = [MODE_FROSTFREE, MODE_COMFORT, MODE_ECO, MODE_STOP]
+    MODES = [MODE_ANTIFROST, MODE_COMFORT, MODE_ECO, MODE_STOP]
 
     MODE_CONFIGS = {
-        "FROSTFREE": {
+        "ANTIFROST": {
             "gpio1": True,
             "gpio2": False,
         },
@@ -97,7 +97,7 @@ class Filpilote(CleepModule):
         #  - ...
         pass
 
-    def __get_area(self, area_name):
+    def __get_area_by_name(self, area_name):
         """
         Return specified area
 
@@ -109,7 +109,6 @@ class Filpilote(CleepModule):
             None: if area not found
         """
         devices = self._get_devices()
-        self.logger.info('===>DEVICES %s', devices)
         found = list(filter(lambda dev: dev['name'] == area_name, devices.values()))
         return found[0] if len(found) == 1 else None
     
@@ -151,7 +150,7 @@ class Filpilote(CleepModule):
                 'name': 'area_name',
                 'value': area_name,
                 'type': str,
-                'validator': lambda val: self.__get_area(val) is None,
+                'validator': lambda val: self.__get_area_by_name(val) is None,
                 'message': 'Area name is already in use'
             },
             {
@@ -171,6 +170,7 @@ class Filpilote(CleepModule):
         ])
 
         area = {
+            'type': 'filpilotearea',
             'name': area_name,
             'mode': self.MODE_STOP,
         }
@@ -190,27 +190,27 @@ class Filpilote(CleepModule):
             self.__delete_gpio_in_gpios(gpio2_data, 2)
             raise CommandError('Unable to save new area')
                
-    def delete_area(self, area_name):
+    def delete_area(self, area_uuid):
         """
         Delete specified area
         
         Args:
-            area_name (str): area name to delete
+            area_uuid (str): area uuid
 
         Returns:
             bool: True if area deleted successfully, False otherwise
         """
         self._check_parameters([
             {
-                'name': 'area_name',
-                'value': area_name,
+                'name': 'area_uuid',
+                'value': area_uuid,
                 'type': str,
-                'validator': lambda val: self.__get_area(val) is not None,
+                'validator': lambda uuid: self._get_device(uuid) is not None,
                 'message': 'Specified area does not exist'
             }
         ])
         
-        area = self.__get_area(area_name)
+        area = self._get_device(area_uuid)
 
         # delete gpios
         self.__delete_gpio_in_gpios(area['gpio1'], 1)
@@ -222,12 +222,12 @@ class Filpilote(CleepModule):
         
         return True
 
-    def set_mode(self, area_name, mode):
+    def set_mode(self, area_uuid, mode):
         """
         Set area mode
 
         Args:
-            area_name (str): area name
+            area_uuid (str): area uuid
             mode (str): new mode
 
         Returns:
@@ -235,10 +235,10 @@ class Filpilote(CleepModule):
         """
         self._check_parameters([
             {
-                'name': 'area_name',
-                'value': area_name,
+                'name': 'area_uuid',
+                'value': area_uuid,
                 'type': str,
-                'validator': lambda val: self.__get_area(val) is not None,
+                'validator': lambda uuid: self._get_device(uuid) is not None,
                 'message': 'Specified area does not exist'
             },
             {
@@ -250,9 +250,9 @@ class Filpilote(CleepModule):
             }
         ])
 
-        area = self.__get_area(area_name)
+        area = self._get_device(area_uuid)
         if not self._update_device(area['uuid'], { 'mode': mode }):
-            raise CommandError(f'Unable to set mode {mode} for {area_name}')
+            raise CommandError(f'Unable to set mode {mode} for {area["name"]}')
     
         return self.__apply_mode(mode, area)
     
