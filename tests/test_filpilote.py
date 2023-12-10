@@ -33,12 +33,16 @@ class TestFilpilote(unittest.TestCase):
         "subtype": "output",
         "pin": 2,
     }
+    THERMOSTAT_EVENT_ECO = {"device_uuid": "123-456-789", "mode": "eco"}
+    THERMOSTAT_EVENT_STOP = {"device_uuid": "123-456-789", "mode": "stop"}
+    THERMOSTAT_EVENT_ANTIFROST = {"device_uuid": "123-456-789", "mode": "antifrost"}
+    THERMOSTAT_EVENT_COMFORT1 = {"device_uuid": "123-456-789", "mode": "comfort1"}
+    THERMOSTAT_EVENT_COMFORT2 = {"device_uuid": "123-456-789", "mode": "comfort2"}
+    THERMOSTAT_EVENT_COMFORT3 = {"device_uuid": "123-456-789", "mode": "comfort3"}
 
     def setUp(self):
-        # Change here logging.DEBUG to logging.FATAL to disable logging during tests writings
-        # Note that coverage command does not display logging
         logging.basicConfig(
-            level=logging.DEBUG,
+            level=logging.FATAL,
             format="%(asctime)s %(name)s:%(lineno)d %(levelname)s : %(message)s",
         )
         self.session = session.TestSession(self)
@@ -48,11 +52,6 @@ class TestFilpilote(unittest.TestCase):
         self.session.clean()
 
     def init(self, start=True):
-        """
-        Call this function at beginning of every test cases. By default it starts your app, but if you specify start=False,
-        the application must be started manually which is useful in some cases like testing _on_configure app function.
-        """
-        # next line instanciates your module, overwriting all useful stuff to isolate your module for tests
         self.module = self.session.setup(Filpilote)
 
         add_gpio_mock = self.session.make_mock_command(
@@ -72,6 +71,56 @@ class TestFilpilote(unittest.TestCase):
 
         if start:
             self.session.start_module(self.module)
+
+    def test_on_render_mode_eco(self):
+        self.init()
+        self.module._get_device = Mock(return_value={"uuid": "123-456-789"})
+        self.module.set_mode = Mock()
+
+        self.module.on_render("ThermostatProfile", self.THERMOSTAT_EVENT_ECO)
+
+        self.module.set_mode.assert_called_with("123-456-789", Filpilote.MODE_ECO)
+
+    def test_on_render_mode_stop(self):
+        self.init()
+        self.module._get_device = Mock(return_value={"uuid": "123-456-789"})
+        self.module.set_mode = Mock()
+
+        self.module.on_render("ThermostatProfile", self.THERMOSTAT_EVENT_STOP)
+
+        self.module.set_mode.assert_called_with("123-456-789", Filpilote.MODE_STOP)
+
+    def test_on_render_mode_antifrost(self):
+        self.init()
+        self.module._get_device = Mock(return_value={"uuid": "123-456-789"})
+        self.module.set_mode = Mock()
+
+        self.module.on_render("ThermostatProfile", self.THERMOSTAT_EVENT_ANTIFROST)
+
+        self.module.set_mode.assert_called_with("123-456-789", Filpilote.MODE_ANTIFROST)
+
+    def test_on_render_mode_comfort(self):
+        self.init()
+        self.module._get_device = Mock(return_value={"uuid": "123-456-789"})
+        self.module.set_mode = Mock()
+
+        self.module.on_render("ThermostatProfile", self.THERMOSTAT_EVENT_COMFORT1)
+        self.module.set_mode.assert_called_with("123-456-789", Filpilote.MODE_COMFORT)
+
+        self.module.on_render("ThermostatProfile", self.THERMOSTAT_EVENT_COMFORT2)
+        self.module.set_mode.assert_called_with("123-456-789", Filpilote.MODE_COMFORT)
+
+        self.module.on_render("ThermostatProfile", self.THERMOSTAT_EVENT_COMFORT3)
+        self.module.set_mode.assert_called_with("123-456-789", Filpilote.MODE_COMFORT)
+
+    def test_on_render_unknown_device(self):
+        self.init()
+        self.module._get_device = Mock(return_value=None)
+        self.module.set_mode = Mock()
+
+        self.module.on_render("ThermostatProfile", self.THERMOSTAT_EVENT_ECO)
+
+        self.module.set_mode.assert_not_called()
 
     def test_add_area(self):
         self.init()

@@ -67,7 +67,7 @@ class Filpilote(CleepRenderer):
             bootstrap (dict): bootstrap objects
             debug_enabled: debug status
         """
-        CleepModule.__init__(self, bootstrap, debug_enabled)
+        CleepRenderer.__init__(self, bootstrap, debug_enabled)
 
     def on_render(self, profile_name, profile_values):
         """
@@ -82,7 +82,21 @@ class Filpilote(CleepRenderer):
             if not device:
                 # device is surely not handled by this application
                 return
-            self.set_mode(device["uuid"], profile_values["mode"])
+
+            if profile_values["mode"] == ThermostatProfile.MODE_STOP:
+                mode = self.MODE_STOP
+            elif profile_values["mode"] == ThermostatProfile.MODE_ECO:
+                mode = self.MODE_ECO
+            elif profile_values["mode"] == ThermostatProfile.MODE_ANTIFROST:
+                mode = self.MODE_ANTIFROST
+            elif profile_values["mode"] in [
+                ThermostatProfile.MODE_COMFORT1,
+                ThermostatProfile.MODE_COMFORT2,
+                ThermostatProfile.MODE_COMFORT3,
+            ]:
+                mode = self.MODE_COMFORT
+
+            self.set_mode(device["uuid"], mode)
 
     def __get_area_by_name(self, area_name):
         """
