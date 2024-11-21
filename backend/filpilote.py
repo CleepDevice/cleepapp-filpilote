@@ -13,7 +13,7 @@ class Filpilote(CleepRenderer):
     """
 
     MODULE_AUTHOR = "Cleep"
-    MODULE_VERSION = "0.0.0"
+    MODULE_VERSION = "1.0.0"
     MODULE_DEPS = ["gpios"]
     MODULE_DESCRIPTION = "Control your home heaters using french fil-pilote way"
     MODULE_LONGDESCRIPTION = "TODO"

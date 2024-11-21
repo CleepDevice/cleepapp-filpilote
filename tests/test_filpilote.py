@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from cleep.libs.tests import session
 import unittest
 import logging
 import sys
@@ -10,8 +11,7 @@ from cleep.exception import (
     InvalidParameter,
     CommandError,
 )
-from cleep.libs.tests import session
-from mock import Mock, patch
+from unittest.mock import Mock, patch
 
 
 class TestFilpilote(unittest.TestCase):
@@ -55,7 +55,7 @@ class TestFilpilote(unittest.TestCase):
         self.module = self.session.setup(Filpilote)
 
         add_gpio_mock = self.session.make_mock_command(
-            "add_gpio", [self.GPIO1, self.GPIO2]
+            "add_gpio", side_effect=[self.GPIO1, self.GPIO2]
         )
         self.session.add_mock_command(add_gpio_mock)
         delete_gpio_mock = self.session.make_mock_command("delete_gpio")
@@ -187,7 +187,7 @@ class TestFilpilote(unittest.TestCase):
     def test_add_area_should_delete_gpio1_if_gpio2_reservation_failed(self):
         self.init()
         self.session.set_mock_command_response(
-            "add_gpio", [self.GPIO1, session.CommandFailure("Error GPIO2")]
+            "add_gpio", side_effect=[self.GPIO1, session.CommandFailure("Error GPIO2")]
         )
         self.module._add_device = Mock()
 
@@ -358,7 +358,7 @@ class TestFilpilote(unittest.TestCase):
         self.init()
         area = self.module.add_area("firstfloor", "GPIO1", "GPIO2")
         self.session.set_mock_command_response(
-            "turn_on", ["ok", Exception("GPIO2 failed")]
+            "turn_on", side_effect=["ok", Exception("GPIO2 failed")]
         )
 
         response = self.module.set_mode(area["uuid"], self.module.MODE_ECO)

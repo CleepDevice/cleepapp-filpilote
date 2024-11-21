@@ -1,7 +1,6 @@
 # Changelog
 
-## [UNRELEASED] - YYYY-MM-DD
+## [1.0.0] - 2024-01-11
 ### Added
 - First release
-
     
