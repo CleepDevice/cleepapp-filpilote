@@ -28,19 +28,26 @@ Here the list of components for a single fil-pilote line:
 -   390ohms resistor x2
 -   MOC3041 x2
 
-> Be careful, you have to manipulate 220v !
+> Be careful, you will manipulate 220v on J2 side !
 
 ## Raspberry pi connections
 
--   Terminal J1 #1 is connected to raspberry on GPIO pin
+-   Terminal J1 #1 is connected to raspberry on GPIO pin (configured as gpio1 on app)
 -   Terminal J1 #2 is connected to raspberry on Ground pin
--   Terminal J1 #3 is connected to raspberry on GPIO pin
+-   Terminal J1 #3 is connected to raspberry on GPIO pin (configured as gpio2 on app)
 -   Terminal J2 #1 is connected to 220 phase
 -   Terminal J2 #2 is connected to heater fil-pilote
 
 Terminal J1 #1 and #2 are configured through filpilote application.
 
-Keep in mind order is important otherwise pre-configured some mode will be reversed.
+> Keep in mind order is important otherwise pre-configured some mode will be reversed.
+
+### Connection example
+
+Using consecutive pins 39-37-35 from top left raspberry pi gpios, they will be connected like this:
+-   Pin39 (GND) is connected to Terminal J1 #2
+-   Pin37 (GPIO26) is connected to Terminal J1 #3 and configured as gpio1 on filpilote app
+-   Pin35 (GPIO19) is connected to Terminal J1 #1 and configured as gpio2 on filpilote app
 
 ## Links
 
