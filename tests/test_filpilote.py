@@ -3,9 +3,7 @@
 from cleep.libs.tests import session
 import unittest
 import logging
-import sys
 
-sys.path.append("../")
 from backend.filpilote import Filpilote
 from cleep.exception import (
     InvalidParameter,
